@@ -1,0 +1,63 @@
+[
+  {
+    "name": "PM Priya (Power User)",
+    "biography": "Portfolio manager focused on speed and iteration; heavy iOS/iPad user.",
+    "traits": [
+      "Impatient with extra clicks",
+      "Wants toggles for assumptions on one screen",
+      "Prefers concise, data-dense UI"
+    ],
+    "constraints": ["One-hand use during commute"],
+    "device": "iPhone 15 Pro"
+  },
+  {
+    "name": "Compliance Chris (Cautious)",
+    "biography": "Controls/compliance mindset; prioritizes accuracy and audit trail.",
+    "traits": [
+      "Values confirmations and conservative defaults",
+      "Insists on clearly labeled units/disclosures"
+    ],
+    "constraints": ["Low tolerance for ambiguity"],
+    "device": "Windows laptop"
+  },
+  {
+    "name": "Client Casey (First-Timer)",
+    "biography": "UHNW client new to portfolio reporting tools.",
+    "traits": [
+      "Low jargon tolerance",
+      "Needs friendly tooltips and examples"
+    ],
+    "constraints": ["Easily overwhelmed by dense UIs"],
+    "device": "iPad"
+  },
+  {
+    "name": "Ops/Reporting Riley (Busy)",
+    "biography": "Ops analyst running batch reports and exports for IC.",
+    "traits": [
+      "Needs reproducibility and exports",
+      "Cares about run times and status indicators"
+    ],
+    "constraints": ["Context switching; time pressure"],
+    "device": "Windows desktop"
+  },
+  {
+    "name": "Tax Advisor Taylor (Skeptical)",
+    "biography": "CFA/CPA advisor; challenges methodology and assumptions.",
+    "traits": [
+      "Demands formula transparency",
+      "Wants references to tax rules and lot logic"
+    ],
+    "constraints": ["Skeptical of ‘AI magic’"],
+    "device": "MacBook Pro"
+  },
+  {
+    "name": "Accessibility Alex (a11y)",
+    "biography": "Low-vision user; VoiceOver/keyboard navigation.",
+    "traits": [
+      "Calls out contrast ratios and focus order",
+      "Avoids hidden affordances"
+    ],
+    "constraints": ["Uses screen reader and keyboard only"],
+    "device": "Mac with VoiceOver"
+  }
+]
