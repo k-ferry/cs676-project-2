@@ -1,0 +1,25 @@
+# --- Python bytecode/cache ---
+__pycache__/
+*.py[cod]
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+
+# --- Secrets & local config ---
+.env
+.streamlit/secrets.toml
+
+# --- TinyTroupe/Streamlit cache artifacts ---
+cache.session.json
+openai_api_cache.pickle
+
+# --- Build/outputs you don't want in git ---
+exports/
+
+# --- Editors/OS noise ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
