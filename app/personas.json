@@ -8,7 +8,12 @@
       "Prefers concise, data-dense UI"
     ],
     "constraints": ["One-hand use during commute"],
-    "device": "iPhone 15 Pro"
+    "device": "iPhone 15 Pro",
+    "occupation": "Portfolio Manager",
+    "age": 38,
+    "gender": "female",
+    "location": "USA",
+    "education": "MBA"
   },
   {
     "name": "Compliance Chris (Cautious)",
@@ -18,7 +23,12 @@
       "Insists on clearly labeled units/disclosures"
     ],
     "constraints": ["Low tolerance for ambiguity"],
-    "device": "Windows laptop"
+    "device": "Windows laptop",
+    "occupation": "Compliance Officer",
+    "age": 45,
+    "gender": "male",
+    "location": "USA",
+    "education": "JD"
   },
   {
     "name": "Client Casey (First-Timer)",
@@ -28,7 +38,12 @@
       "Needs friendly tooltips and examples"
     ],
     "constraints": ["Easily overwhelmed by dense UIs"],
-    "device": "iPad"
+    "device": "iPad",
+    "occupation": "Investor",
+    "age": 52,
+    "gender": "unspecified",
+    "location": "USA",
+    "education": "Bachelor's"
   },
   {
     "name": "Ops/Reporting Riley (Busy)",
@@ -38,7 +53,12 @@
       "Cares about run times and status indicators"
     ],
     "constraints": ["Context switching; time pressure"],
-    "device": "Windows desktop"
+    "device": "Windows desktop",
+    "occupation": "Operations Analyst",
+    "age": 31,
+    "gender": "unspecified",
+    "location": "USA",
+    "education": "Bachelor's"
   },
   {
     "name": "Tax Advisor Taylor (Skeptical)",
@@ -48,7 +68,12 @@
       "Wants references to tax rules and lot logic"
     ],
     "constraints": ["Skeptical of ‘AI magic’"],
-    "device": "MacBook Pro"
+    "device": "MacBook Pro",
+    "occupation": "Tax Advisor",
+    "age": 40,
+    "gender": "unspecified",
+    "location": "USA",
+    "education": "Master's in Taxation"
   },
   {
     "name": "Accessibility Alex (a11y)",
@@ -58,6 +83,11 @@
       "Avoids hidden affordances"
     ],
     "constraints": ["Uses screen reader and keyboard only"],
-    "device": "Mac with VoiceOver"
+    "device": "Mac with VoiceOver",
+    "occupation": "QA Specialist",
+    "age": 34,
+    "gender": "unspecified",
+    "location": "USA",
+    "education": "Bachelor's"
   }
 ]
