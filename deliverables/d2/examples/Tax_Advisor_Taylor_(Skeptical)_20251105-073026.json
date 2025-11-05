@@ -1,0 +1,80 @@
+{
+  "timestamp": "20251105-073026",
+  "persona": "Tax Advisor Taylor (Skeptical)",
+  "persona_meta": {
+    "name": "Tax Advisor Taylor (Skeptical)",
+    "biography": "CFA/CPA advisor; challenges methodology and assumptions.",
+    "traits": [
+      "Demands formula transparency",
+      "Wants references to tax rules and lot logic"
+    ],
+    "constraints": [
+      "Skeptical of \u2018AI magic\u2019"
+    ],
+    "device": "MacBook Pro",
+    "occupation": "Tax Advisor",
+    "age": 40,
+    "gender": "unspecified",
+    "location": "USA",
+    "education": "Master's in Taxation"
+  },
+  "scenario": "First look (discovery + immediate reaction)",
+  "assumptions": {
+    "us_eq": 40,
+    "intl_eq": 20,
+    "fi": 15,
+    "altshf": 5,
+    "altspe": 10,
+    "altsre": 5,
+    "cash": 5,
+    "turnover": 40,
+    "yield": 2,
+    "horizon": 1,
+    "lots": "FIFO",
+    "harvest": "ON",
+    "reinvest": "Yes",
+    "ord_rate": 37,
+    "ltcg_rate": 20,
+    "niit": 3,
+    "state_rate": 6,
+    "tax_deferred": 20,
+    "tax_exempt": 0
+  },
+  "assumption_text": "Mix: US 40% / Intl 20% / FI 15% / AltsHF 5% / AltsPE 10% / AltsRE 5%  / Cash 5%\nTurnover 40%, Yield 2%, Horizon 1y\nLots: FIFO, HarvestLosses: ON, Reinvest: Yes\nTax: Ord 37%, LTCG 20%, NIIT 3%, State 6%\nAcct: Tax-Deferred 20%, Tax-Exempt 0%",
+  "feature_brief": "# Feature: After-Tax Return / Tax-Impact Preview (Portfolio Reporting)\n\n**Inputs the user can set (assumptions):**\n- Asset mix: %US Equity, %Intl Equity, %Fixed Income (muni/taxable), %Alts PE, %Alts HF, %Alts RE, %Cash\n- Strategy: active vs passive; turnover %; yield %; distribution frequency\n- Holding period: short vs long gains split; lot selection (FIFO/Specific ID)\n- Tax profile: filing status; marginal ordinary & LTCG rates; NIIT; state tax; loss carryforwards\n- Accounts: % tax-deferred / tax-exempt\n- Horizon: 1y / 3y / 5y / 10y\n- Actions: rebalance, harvest losses (on/off), realize gains, reinvest vs cash out\n\n**Outputs:**\n- Pre-tax vs after-tax return; tax drag %; estimated taxes by bucket (Ordinary/LTCG/NIIT/State)\n- Explainability panel: \u201cWhat drove the tax drag?\u201d with a simple waterfall narrative",
+  "turns": 4,
+  "transcript": [
+    {
+      "speaker": "User",
+      "text": "Evaluate this feature and assumptions.\n\n        === FEATURE ===\n        # Feature: After-Tax Return / Tax-Impact Preview (Portfolio Reporting)\n\n**Inputs the user can set (assumptions):**\n- Asset mix: %US Equity, %Intl Equity, %Fixed Income (muni/taxable), %Alts PE, %Alts HF, %Alts RE, %Cash\n- Strategy: active vs passive; turnover %; yield %; distribution frequency\n- Holding period: short vs long gains split; lot selection (FIFO/Specific ID)\n- Tax profile: filing status; marginal ordinary & LTCG rates; NIIT; state tax; loss carryforwards\n- Accounts: % tax-deferred / tax-exempt\n- Horizon: 1y / 3y / 5y / 10y\n- Actions: rebalance, harvest losses (on/off), realize gains, reinvest vs cash out\n\n**Outputs:**\n- Pre-tax vs after-tax return; tax drag %; estimated taxes by bucket (Ordinary/LTCG/NIIT/State)\n- Explainability panel: \u201cWhat drove the tax drag?\u201d with a simple waterfall narrative\n\n        === ASSUMPTION SUMMARY ===\n        Mix: US 40% / Intl 20% / FI 15% / AltsHF 5% / AltsPE 10% / AltsRE 5%  / Cash 5%\nTurnover 40%, Yield 2%, Horizon 1y\nLots: FIFO, HarvestLosses: ON, Reinvest: Yes\nTax: Ord 37%, LTCG 20%, NIIT 3%, State 6%\nAcct: Tax-Deferred 20%, Tax-Exempt 0%\n\n        === SCENARIO ===\n        First look (discovery + immediate reaction)\n\n        Task: Provide exactly 3 issues (tag each: usability/copy/trust/speed/a11y/discoverability),\n        exactly 2 suggestions, and exactly 1 follow-up question. Keep to 6 lines total.\n\n        Rules: Do not repeat anything already said in this conversation. Do not include the words TALK or DONE.\n        Do not echo this prompt. Plain text only\u2014no headings, no JSON, no bullets with labels like 'TALK'/'DONE'."
+    },
+    {
+      "speaker": "Tax Advisor Taylor (Skeptical)",
+      "text": "usability: Inputs feel dense on first open.\nsuggestion: Add sensible defaults and a 30-second guided tour.\nquestion: Which tax buckets are estimated vs exact?"
+    },
+    {
+      "speaker": "User",
+      "text": "Continue the same review. Add ONE new issue (tag it), ONE new suggestion, and ONE concise follow-up question. They must be different from anything said earlier. Plain text only. No meta words (TALK, DONE)."
+    },
+    {
+      "speaker": "Tax Advisor Taylor (Skeptical)",
+      "text": "New issue: Discoverability is low; users may struggle to find the feature. Suggestion: Create a guided walkthrough for first-time users to enhance understanding. Follow-up: What user feedback mechanisms are in place to improve this feature?\nNew issue: Discoverability is low; users may struggle to find the feature. Suggestion: Create a guided walkthrough for first-time users to enhance understanding. Follow-up: What user feedback mechanisms are in place to improve this feature?\nNew issue: Discoverability is low; users may struggle to find the feature. Suggestion: Create a guided walkthrough for first-time users to enhance understanding. Follow-up: What user feedback mechanisms are in place to improve this feature?"
+    },
+    {
+      "speaker": "User",
+      "text": "Continue the same review. Add ONE new issue (tag it), ONE new suggestion, and ONE concise follow-up question. They must be different from anything said earlier. Plain text only. No meta words (TALK, DONE)."
+    },
+    {
+      "speaker": "Tax Advisor Taylor (Skeptical)",
+      "text": "New issue: Clarity of assumptions is lacking; users may misinterpret input requirements. Suggestion: Provide examples for each input field to guide users. Follow-up: How will you ensure ongoing user support for this feature?\nNew issue: Clarity of assumptions is lacking; users may misinterpret input requirements. Suggestion: Provide examples for each input field to guide users. Follow-up: How will you ensure ongoing user support for this feature?\nNew issue: Clarity of assumptions is lacking; users may misinterpret input requirements. Suggestion: Provide examples for each input field to guide users. Follow-up: How will you ensure ongoing user support for this feature?"
+    },
+    {
+      "speaker": "User",
+      "text": "Continue the same review. Add ONE new issue (tag it), ONE new suggestion, and ONE concise follow-up question. They must be different from anything said earlier. Plain text only. No meta words (TALK, DONE)."
+    },
+    {
+      "speaker": "Tax Advisor Taylor (Skeptical)",
+      "text": "New issue: Accessibility is insufficient; color contrast may not meet standards for visually impaired users. Suggestion: Implement ARIA labels for better screen reader compatibility. Follow-up: What testing has been done to ensure compliance with accessibility standards?\nNew issue: Accessibility is insufficient; color contrast may not meet standards for visually impaired users. Suggestion: Implement ARIA labels for better screen reader compatibility. Follow-up: What testing has been done to ensure compliance with accessibility standards?\nNew issue: Accessibility is insufficient; color contrast may not meet standards for visually impaired users. Suggestion: Implement ARIA labels for better screen reader compatibility. Follow-up: What testing has been done to ensure compliance with accessibility standards?"
+    }
+  ]
+}
