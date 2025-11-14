@@ -1,4 +1,4 @@
-# after_tax_ml.py
+# after_tax_regression.py
 """
 Train a regression model to predict AFTER-TAX RETURN from
 simulated portfolio + tax profile features.
