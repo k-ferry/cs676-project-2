@@ -13,7 +13,6 @@ import tinytroupe.control as control
 from utils import load_personas, assumption_summary, save_markdown, ts
 from after_tax_regression import run_after_tax_regression
 
-
 # Quiet a noisy pydantic warning some users see
 warnings.filterwarnings("ignore", message=".*UnsupportedFieldAttributeWarning.*")
 
@@ -771,43 +770,26 @@ with col2:
         json_path = save_markdown("exports", json_filename, json_str)
         st.info(f"Saved JSON: {json_path}")
 
-        # 9) Download buttons
-        st.download_button(
-            "Download Markdown",
-            md,
-            file_name=md_filename,
-            mime="text/markdown",
-            key="dl_md",
-        )
-        st.download_button(
-            "Download JSON",
-            json_str,
-            file_name=json_filename,
-            mime="application/json",
-            key="dl_json",
+                        # === ML Demo Section ===
+        st.subheader("ML Demo: After-Tax Return Regression")
+
+        st.markdown(
+            "This demo simulates a dataset of pre-tax returns, turnover, yield, and tax "
+            "profiles, then trains a linear regression model to predict the *after-tax* "
+            "return. Each click re-trains the model on freshly simulated data."
         )
 
-        # === ML Demo Section ===
-    st.divider()
-    st.subheader("ML Demo: After-Tax Return Regression")
+        if st.button("Run ML Demo (simulate & train)", key="run_ml_after_tax"):
+            with st.spinner("Simulating data and training regression model..."):
+                results = run_after_tax_regression()
 
-    st.markdown(
-        "This demo simulates a dataset of pre-tax returns, turnover, yield, and tax "
-        "profiles, then trains a linear regression model to predict the *after-tax* "
-        "return. Each click re-trains the model on freshly simulated data."
-    )
+            st.success(
+                f"Trained on {results['n_samples']} simulated portfolios "
+                f"with {results['n_features']} features.\n\n"
+                f"Test set size: {results['test_size']} samples\n\n"
+                f"R² on test set: **{results['test_r2']:.3f}**\n\n"
+                f"Mean absolute error: **{results['test_mae']:.4f}**"
+            )
 
-    if st.button("Run ML Demo (simulate & train)"):
-        with st.spinner("Simulating data and training regression model..."):
-            results = run_after_tax_regression()
-
-        st.success(
-            f"Trained on {results['n_samples']} simulated portfolios "
-            f"with {results['n_features']} features.\n\n"
-            f"Test set size: {results['test_size']} samples\n\n"
-            f"R² on test set: **{results['test_r2']:.3f}**\n\n"
-            f"Mean absolute error: **{results['test_mae']:.4f}**"
-        )
-
-        st.markdown("**Sample of true vs. predicted after-tax returns (first 10 rows):**")
-        st.dataframe(results["sample_df"])
+            st.markdown("**Sample of true vs. predicted after-tax returns (first 10 rows):**")
+            st.dataframe(results["sample_df"])
