@@ -506,22 +506,30 @@ with col2:
             "type": "TinyPerson",
             "persona": {
                 "name": P.get("name", "Unnamed Persona"),
-                "biography": bio,
-                "personality": {"traits": traits},
-                "preferences": {"device": device},
-                "constraints": constraints,
-                "occupation": occupation,
-                "age": age,
-                "gender": gender,
-                "location": location,
-                "education": education,
+                "biography": P.get("biography", "No biography provided."),
+                "personality": {"traits": P.get("traits", ["practical", "direct"])},
+                "preferences": {"device": P.get("device", "iPhone")},
+                "constraints": P.get("constraints", []),
+                "occupation": P.get("occupation", "Product Manager"),
+                "age": P.get("age", 35),
+                "gender": P.get("gender", "unspecified"),
+                "location": P.get("location", "USA"),
+                "education": P.get("education", "Bachelor's"),
             },
             "memory": [
                 "You are reviewing an After-Tax Impact feature for a portfolio reporting system.",
                 "Be concrete and tag issues with: usability, copy, trust, speed, a11y, discoverability."
             ],
         }
+
+        # --- D3 fix: avoid 'Agent name ... is already in use' across reruns (Streamlit Cloud, etc.)
+        # TinyTroupe keeps a global registry of agents; here we clear it so each simulation
+        # run starts with a clean slate.
+        if hasattr(TinyPerson, "all_agents"):
+            TinyPerson.all_agents.clear()
+
         tp = TinyPerson.load_specification(agent_spec)
+
 
         if hasattr(tp, "consolidate_episode_memories"):
             tp.consolidate_episode_memories = lambda *args, **kwargs: None
