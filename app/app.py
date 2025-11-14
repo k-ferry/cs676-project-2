@@ -4,6 +4,7 @@ import textwrap
 import warnings
 import streamlit as st
 from dotenv import load_dotenv
+import json as _json
 
 # Keep this import only — it's stable across TinyTroupe versions
 from tinytroupe.agent import TinyPerson
@@ -480,23 +481,40 @@ with col2:
     st.subheader("Run Simulation")
 
     if st.button("Simulate"):
+        # Start fresh each run
+        st.session_state.chat = []
+
         # 1) Get the chosen persona
-        P = [p for p in personas if p["name"] == persona][0]
+        P = next((p for p in personas if p["name"] == persona), None)
+        if not P:
+            st.error("Selected persona not found. Check app/personas.json.")
+            st.stop()
+
+        # Resilient persona fields
+        bio = P.get("biography") or "No biography provided."
+        traits = P.get("traits") or ["practical", "direct"]
+        constraints = P.get("constraints") or []
+        device = P.get("device") or "iPhone"
+        occupation = P.get("occupation", "Product Manager")
+        age = P.get("age", 35)
+        gender = P.get("gender", "unspecified")
+        location = P.get("location", "USA")
+        education = P.get("education", "Bachelor's")
 
         # 2) Build the TinyPerson (unchanged from your version) …
         agent_spec = {
             "type": "TinyPerson",
             "persona": {
                 "name": P.get("name", "Unnamed Persona"),
-                "biography": P.get("biography", "No biography provided."),
-                "personality": {"traits": P.get("traits", ["practical", "direct"])},
-                "preferences": {"device": P.get("device", "iPhone")},
-                "constraints": P.get("constraints", []),
-                "occupation": P.get("occupation", "Product Manager"),
-                "age": P.get("age", 35),
-                "gender": P.get("gender", "unspecified"),
-                "location": P.get("location", "USA"),
-                "education": P.get("education", "Bachelor's"),
+                "biography": bio,
+                "personality": {"traits": traits},
+                "preferences": {"device": device},
+                "constraints": constraints,
+                "occupation": occupation,
+                "age": age,
+                "gender": gender,
+                "location": location,
+                "education": education,
             },
             "memory": [
                 "You are reviewing an After-Tax Impact feature for a portfolio reporting system.",
@@ -575,9 +593,7 @@ with col2:
         Do not echo this prompt. Plain text only—no headings, no JSON, no bullets with labels like 'TALK'/'DONE'.
         """).strip()
 
-
-        _push("user", user_prompt)
-
+  
         # 4) Run turns
         st.write("Running turns…")
         transcript = []
@@ -677,6 +693,38 @@ with col2:
             else:
                 st.markdown(f"**{who}:** {txt}")
 
+
+        # --- Analytics (Auto): counts of tags in assistant replies ---
+        import io, csv
+
+        st.subheader("Analytics (Auto)")
+        agg = {"usability": 0, "copy": 0, "trust": 0, "speed": 0, "a11y": 0, "discoverability": 0}
+
+        # Count tags only from assistant messages
+        for who, txt in transcript:
+            if who != "User":
+                agg = merge_counts(agg, count_tags(txt))
+
+        # Show a quick KPI row
+        cols = st.columns(len(agg))
+        for (k, v), c in zip(agg.items(), cols):
+            c.metric(k, v)
+
+        # Optional: CSV download of the tag counts
+        buf = io.StringIO()
+        writer = csv.writer(buf)
+        writer.writerow(["tag", "count"])
+        for k, v in agg.items():
+            writer.writerow([k, v])
+
+        st.download_button(
+            "Download tag counts (CSV)",
+            data=buf.getvalue(),
+            file_name="tag_counts.csv",
+            mime="text/csv",
+        )
+
+
         # 6) Ratings
         st.subheader("Quick Ratings (manual)")
         clarity = st.slider("Clarity (1-5)", 1, 5, 3, key="clarity")
@@ -701,11 +749,11 @@ with col2:
         md_lines.append("\n## Notes / Actionables\n- [ ]\n- [ ]\n")
 
         md = "\n".join(md_lines)
-        filename = f"{persona.replace(' ', '_')}_{ts()}.md"
-        path = save_markdown("exports", filename, md)
-        st.info(f"Saved: {path}")
+        md_filename = f"{persona.replace(' ', '_')}_{ts()}.md"
+        md_path = save_markdown("exports", md_filename, md)
+        st.info(f"Saved: {md_path}")
 
-        import json as _json
+        # 8) Export JSON
         json_payload = {
             "timestamp": ts(),
             "persona": P["name"],
@@ -717,8 +765,9 @@ with col2:
             "turns": turns,
             "transcript": [{"speaker": who, "text": txt} for (who, txt) in transcript],
         }
-        json_path = save_markdown("exports", f"{P['name'].replace(' ', '_')}_{ts()}.json",
-                                _json.dumps(json_payload, indent=2))
+        json_str = _json.dumps(json_payload, indent=2)
+        json_filename = f"{P['name'].replace(' ', '_')}_{ts()}.json"
+        json_path = save_markdown("exports", json_filename, json_str)
         st.info(f"Saved JSON: {json_path}")
 
                         # === ML Demo Section ===
