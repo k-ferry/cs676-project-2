@@ -4,12 +4,15 @@ import textwrap
 import warnings
 import streamlit as st
 from dotenv import load_dotenv
+import json as _json
 
 # Keep this import only — it's stable across TinyTroupe versions
 from tinytroupe.agent import TinyPerson
 import tinytroupe.control as control
 
 from utils import load_personas, assumption_summary, save_markdown, ts
+from after_tax_regression import run_after_tax_regression
+
 
 # Quiet a noisy pydantic warning some users see
 warnings.filterwarnings("ignore", message=".*UnsupportedFieldAttributeWarning.*")
@@ -479,23 +482,40 @@ with col2:
     st.subheader("Run Simulation")
 
     if st.button("Simulate"):
+        # Start fresh each run
+        st.session_state.chat = []
+
         # 1) Get the chosen persona
-        P = [p for p in personas if p["name"] == persona][0]
+        P = next((p for p in personas if p["name"] == persona), None)
+        if not P:
+            st.error("Selected persona not found. Check app/personas.json.")
+            st.stop()
+
+        # Resilient persona fields
+        bio = P.get("biography") or "No biography provided."
+        traits = P.get("traits") or ["practical", "direct"]
+        constraints = P.get("constraints") or []
+        device = P.get("device") or "iPhone"
+        occupation = P.get("occupation", "Product Manager")
+        age = P.get("age", 35)
+        gender = P.get("gender", "unspecified")
+        location = P.get("location", "USA")
+        education = P.get("education", "Bachelor's")
 
         # 2) Build the TinyPerson (unchanged from your version) …
         agent_spec = {
             "type": "TinyPerson",
             "persona": {
                 "name": P.get("name", "Unnamed Persona"),
-                "biography": P.get("biography", "No biography provided."),
-                "personality": {"traits": P.get("traits", ["practical", "direct"])},
-                "preferences": {"device": P.get("device", "iPhone")},
-                "constraints": P.get("constraints", []),
-                "occupation": P.get("occupation", "Product Manager"),
-                "age": P.get("age", 35),
-                "gender": P.get("gender", "unspecified"),
-                "location": P.get("location", "USA"),
-                "education": P.get("education", "Bachelor's"),
+                "biography": bio,
+                "personality": {"traits": traits},
+                "preferences": {"device": device},
+                "constraints": constraints,
+                "occupation": occupation,
+                "age": age,
+                "gender": gender,
+                "location": location,
+                "education": education,
             },
             "memory": [
                 "You are reviewing an After-Tax Impact feature for a portfolio reporting system.",
@@ -574,9 +594,7 @@ with col2:
         Do not echo this prompt. Plain text only—no headings, no JSON, no bullets with labels like 'TALK'/'DONE'.
         """).strip()
 
-
-        _push("user", user_prompt)
-
+  
         # 4) Run turns
         st.write("Running turns…")
         transcript = []
@@ -676,6 +694,38 @@ with col2:
             else:
                 st.markdown(f"**{who}:** {txt}")
 
+
+        # --- Analytics (Auto): counts of tags in assistant replies ---
+        import io, csv
+
+        st.subheader("Analytics (Auto)")
+        agg = {"usability": 0, "copy": 0, "trust": 0, "speed": 0, "a11y": 0, "discoverability": 0}
+
+        # Count tags only from assistant messages
+        for who, txt in transcript:
+            if who != "User":
+                agg = merge_counts(agg, count_tags(txt))
+
+        # Show a quick KPI row
+        cols = st.columns(len(agg))
+        for (k, v), c in zip(agg.items(), cols):
+            c.metric(k, v)
+
+        # Optional: CSV download of the tag counts
+        buf = io.StringIO()
+        writer = csv.writer(buf)
+        writer.writerow(["tag", "count"])
+        for k, v in agg.items():
+            writer.writerow([k, v])
+
+        st.download_button(
+            "Download tag counts (CSV)",
+            data=buf.getvalue(),
+            file_name="tag_counts.csv",
+            mime="text/csv",
+        )
+
+
         # 6) Ratings
         st.subheader("Quick Ratings (manual)")
         clarity = st.slider("Clarity (1-5)", 1, 5, 3, key="clarity")
@@ -700,11 +750,11 @@ with col2:
         md_lines.append("\n## Notes / Actionables\n- [ ]\n- [ ]\n")
 
         md = "\n".join(md_lines)
-        filename = f"{persona.replace(' ', '_')}_{ts()}.md"
-        path = save_markdown("exports", filename, md)
-        st.info(f"Saved: {path}")
+        md_filename = f"{persona.replace(' ', '_')}_{ts()}.md"
+        md_path = save_markdown("exports", md_filename, md)
+        st.info(f"Saved: {md_path}")
 
-        import json as _json
+        # 8) Export JSON
         json_payload = {
             "timestamp": ts(),
             "persona": P["name"],
@@ -716,7 +766,48 @@ with col2:
             "turns": turns,
             "transcript": [{"speaker": who, "text": txt} for (who, txt) in transcript],
         }
-        json_path = save_markdown("exports", f"{P['name'].replace(' ', '_')}_{ts()}.json",
-                                _json.dumps(json_payload, indent=2))
+        json_str = _json.dumps(json_payload, indent=2)
+        json_filename = f"{P['name'].replace(' ', '_')}_{ts()}.json"
+        json_path = save_markdown("exports", json_filename, json_str)
         st.info(f"Saved JSON: {json_path}")
 
+        # 9) Download buttons
+        st.download_button(
+            "Download Markdown",
+            md,
+            file_name=md_filename,
+            mime="text/markdown",
+            key="dl_md",
+        )
+        st.download_button(
+            "Download JSON",
+            json_str,
+            file_name=json_filename,
+            mime="application/json",
+            key="dl_json",
+        )
+
+        # === ML Demo Section ===
+    st.divider()
+    st.subheader("ML Demo: After-Tax Return Regression")
+
+    st.markdown(
+        "This demo simulates a dataset of pre-tax returns, turnover, yield, and tax "
+        "profiles, then trains a linear regression model to predict the *after-tax* "
+        "return. Each click re-trains the model on freshly simulated data."
+    )
+
+    if st.button("Run ML Demo (simulate & train)"):
+        with st.spinner("Simulating data and training regression model..."):
+            results = run_after_tax_regression()
+
+        st.success(
+            f"Trained on {results['n_samples']} simulated portfolios "
+            f"with {results['n_features']} features.\n\n"
+            f"Test set size: {results['test_size']} samples\n\n"
+            f"R² on test set: **{results['test_r2']:.3f}**\n\n"
+            f"Mean absolute error: **{results['test_mae']:.4f}**"
+        )
+
+        st.markdown("**Sample of true vs. predicted after-tax returns (first 10 rows):**")
+        st.dataframe(results["sample_df"])

@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+*.log
+.env
+exports/
+deliverables/d2/screenshots/
+deliverables/d2/examples/
+.DS_Store
